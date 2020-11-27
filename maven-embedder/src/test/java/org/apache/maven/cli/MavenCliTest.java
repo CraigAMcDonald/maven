@@ -57,7 +57,6 @@ import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.eclipse.sisu.plexus.PlexusBeanModule;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -464,6 +463,82 @@ public class MavenCliTest
                 is( notNullValue() ) );
         assertThat( executionRequest.getLocalRepositoryPath().toString(),
                 is( "." + File.separatorChar + "custom2" ) );
+    }
+    
+    /**
+     * Tests the default global checksum policy (when no -C or -c option is given) to make sure that the default is
+     * strict.
+     */
+    public void testDefaultGlobalChecksumPolicy()
+    {
+        String[] options = new String[2];
+        options[0] = prefixCmdOption( CLIManager.OFFLINE );
+        options[1] = prefixCmdOption( CLIManager.QUIET );
+
+        CliRequest request = createDummyCliRequest( options );
+        cli.doMain( request );
+
+        // Test that the default policy is "fail"
+        assertThat( request.request.getGlobalChecksumPolicy(), is( MavenExecutionRequest.CHECKSUM_POLICY_FAIL ) );
+    }
+
+    /**
+     * Tests that the warn flag (-c) works
+     */
+    public void testWarnCheckSumPolicy()
+    {
+        String[] options = new String[3];
+        options[0] = prefixCmdOption( CLIManager.OFFLINE );
+        options[1] = prefixCmdOption( CLIManager.QUIET );
+
+        // Warn
+        options[2] = prefixCmdOption( CLIManager.CHECKSUM_WARNING_POLICY );
+
+        CliRequest request = createDummyCliRequest( options );
+        cli.doMain( request );
+
+        assertThat( request.request.getGlobalChecksumPolicy(), is( MavenExecutionRequest.CHECKSUM_POLICY_WARN ) );
+    }
+
+    /**
+     * Check that the strict flag (-C) works
+     */
+    public void testStrictChecksumPolicy()
+    {
+        String[] options = new String[3];
+        options[0] = prefixCmdOption( CLIManager.OFFLINE );
+        options[1] = prefixCmdOption( CLIManager.QUIET );
+
+        // Fail
+        options[2] = prefixCmdOption( CLIManager.CHECKSUM_FAILURE_POLICY );
+
+        CliRequest request = createDummyCliRequest( options );
+        cli.doMain( request );
+
+        assertThat( request.request.getGlobalChecksumPolicy(), is( MavenExecutionRequest.CHECKSUM_POLICY_FAIL ) );
+    }
+
+    /**
+     * Prefixes a single-letter command line option character ('o')
+     * with a dash so it can be interpreted as a command line option ('-o')
+     *
+     * @param option The option char to prefix
+     * @return The prefixed option
+     */
+    private static String prefixCmdOption(char option) {
+        StringBuilder sb = new StringBuilder(2);
+        sb.append('-');
+        sb.append(option);
+
+        return sb.toString();
+    }
+    
+    private static CliRequest createDummyCliRequest( String[] options )
+    {
+        CliRequest rq = new CliRequest( options, null );
+        rq.multiModuleProjectDirectory = new File( "." );
+
+        return rq;
     }
 
     private MavenProject createMavenProject( String groupId, String artifactId )
