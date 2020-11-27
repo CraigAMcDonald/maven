@@ -1639,13 +1639,17 @@ public class MavenCli
 
     private String determineGlobalCheckPolicy( final CommandLine commandLine )
     {
-        if ( commandLine.hasOption( CLIManager.CHECKSUM_WARNING_POLICY ) )
+        if ( commandLine.hasOption( CLIManager.CHECKSUM_FAILURE_POLICY ) )
+        {
+            return MavenExecutionRequest.CHECKSUM_POLICY_FAIL;
+        }
+        else if ( commandLine.hasOption( CLIManager.CHECKSUM_WARNING_POLICY ) )
         {
             return MavenExecutionRequest.CHECKSUM_POLICY_WARN;
         }
         else
         {
-            return MavenExecutionRequest.CHECKSUM_POLICY_FAIL;
+            return null;
         }
     }
 
