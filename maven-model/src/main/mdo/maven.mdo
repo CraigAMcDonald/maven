@@ -1997,10 +1997,9 @@
             What to do when verification of an artifact checksum fails. Valid values are
             <code>ignore</code>
             ,
-            <code>fail</code>
+            <code>fail</code> (default for Maven 4 and above)
             or
-            <code>warn</code>
-            (the default).
+            <code>warn</code> (default for Maven 2 and 3)
             ]]>
           </description>
           <type>String</type>

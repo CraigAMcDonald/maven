@@ -39,6 +39,7 @@ import org.eclipse.aether.collection.DependencySelector;
 import org.eclipse.aether.collection.DependencyTraverser;
 import org.eclipse.aether.internal.impl.SimpleLocalRepositoryManagerFactory;
 import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.spi.connector.layout.RepositoryLayout;
 import org.eclipse.aether.util.graph.manager.ClassicDependencyManager;
 import org.eclipse.aether.util.graph.selector.AndDependencySelector;
 import org.eclipse.aether.util.graph.selector.ExclusionDependencySelector;
@@ -60,8 +61,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
@@ -297,6 +301,17 @@ public abstract class AbstractArtifactComponentTestCase
         try ( Writer writer = new OutputStreamWriter( new FileOutputStream( artifactFile ), StandardCharsets.ISO_8859_1) )
         {
             writer.write( artifact.getId() );
+        }
+        
+        MessageDigest md = MessageDigest.getInstance( "MD5" );
+        md.update( artifact.getId().getBytes() );
+        byte[] digest = md.digest();
+        
+        String md5path = repository.pathOf( artifact ) + ".md5";
+        File md5artifactFile = new File( repository.getBasedir(), md5path );
+        try ( Writer writer = new OutputStreamWriter( new FileOutputStream( md5artifactFile ), StandardCharsets.ISO_8859_1) )
+        {
+            writer.append( DatatypeConverter.printHexBinary( digest ) );
         }
     }
 

@@ -71,7 +71,7 @@ public class ArtifactRepositoryPolicy
 
         if ( checksumPolicy == null )
         {
-            checksumPolicy = CHECKSUM_POLICY_WARN;
+            checksumPolicy = CHECKSUM_POLICY_FAIL;
         }
         this.checksumPolicy = checksumPolicy;
     }
