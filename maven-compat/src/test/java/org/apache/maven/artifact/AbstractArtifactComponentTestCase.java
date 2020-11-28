@@ -311,7 +311,7 @@ public abstract class AbstractArtifactComponentTestCase
         File md5artifactFile = new File( repository.getBasedir(), md5path );
         try ( Writer writer = new OutputStreamWriter( new FileOutputStream( md5artifactFile ), StandardCharsets.ISO_8859_1) )
         {
-            writer.append( DatatypeConverter.printHexBinary( digest ) );
+            writer.append( printHexBinary( digest ) );
         }
     }
 
@@ -384,6 +384,19 @@ public abstract class AbstractArtifactComponentTestCase
             new SimpleLocalRepositoryManagerFactory().newInstance( session, localRepo ) );
 
         return session;
+    }
+    
+    private static final char[] hexCode = "0123456789ABCDEF".toCharArray();
+    
+    private static final String printHexBinary( byte[] data )
+    {
+        StringBuilder r = new StringBuilder( data.length * 2 );
+        for ( byte b : data )
+        {
+            r.append( hexCode[( b >> 4 ) & 0xF] );
+            r.append( hexCode[( b & 0xF )] );
+        }
+        return r.toString();
     }
 
 }
