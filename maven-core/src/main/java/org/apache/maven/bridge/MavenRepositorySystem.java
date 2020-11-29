@@ -579,7 +579,7 @@ public class MavenRepositorySystem
         return createRepository( RepositorySystem.DEFAULT_REMOTE_REPO_URL, RepositorySystem.DEFAULT_REMOTE_REPO_ID,
                                  true, ArtifactRepositoryPolicy.UPDATE_POLICY_DAILY, false,
                                  ArtifactRepositoryPolicy.UPDATE_POLICY_DAILY,
-                                 ArtifactRepositoryPolicy.CHECKSUM_POLICY_FAIL );
+                                 ArtifactRepositoryPolicy.DEFAULT_CHECKSUM_POLICY );
     }
 
     public ArtifactRepository createRepository( String url, String repositoryId, boolean releases,
