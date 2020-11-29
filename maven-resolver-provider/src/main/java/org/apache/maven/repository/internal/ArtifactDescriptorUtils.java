@@ -90,7 +90,7 @@ public class ArtifactDescriptorUtils
             case ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN:
                 return RepositoryPolicy.CHECKSUM_POLICY_WARN;
             default:
-                throw new IllegalStateException( "unknown repository checksum policy: " + artifactRepositoryPolicy );
+                throw new IllegalArgumentException( "unknown repository checksum policy: " + artifactRepositoryPolicy );
         }
     }
 
